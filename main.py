@@ -19,8 +19,32 @@ def read_root():
 
 @app.post("/items")
 def add_item(item:Item):
+    for x in items:
+        if x.id==item.id:
+            return{"error":"Id already exists"}
     items.append(item)
     return item
+
+@app.get("/items/category/{category}")
+def get_by_category(category:str):
+    temp:List[Item]=[]
+    for item in items:
+        if item.category==category:
+            temp.append(item)
+    if temp:
+        return temp
+    return{"error":"Item not found"}
+
+@app.get("/items/search/{keyword}")
+def get_by_keyword(keyword:str):
+    temp:List[Item]=[]
+    for item in items:
+        if keyword in item.name:
+            temp.append(item)
+    if temp:
+        return temp
+    return {"error":"Item not found"}
+
 
 @app.get("/items")
 def get_items():
@@ -48,4 +72,5 @@ def delete_item(item_id:int):
             deleted=items.pop(index)
             return deleted
     return {"error":"Item not found"}
+
 
